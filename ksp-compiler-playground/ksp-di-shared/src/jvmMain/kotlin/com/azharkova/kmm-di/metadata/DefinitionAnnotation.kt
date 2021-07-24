@@ -5,12 +5,19 @@ import kotlin.reflect.KClass
 
 val DEFINITION_ANNOTATION_LIST = listOf<KClass<*>>(
     Single::class,
-    Graph::class
+    Graph::class,
+    Cached::class,
+    Entity::class,
+    Shared::class
+
 )
 
 enum class DefinitionAnnotation {
     Single,
-    Graph
+    Graph,
+    Cached,
+    Entity,
+    Shared
     ;
 
     companion object {

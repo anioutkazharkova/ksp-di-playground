@@ -51,9 +51,6 @@ repositories {
 dependencies {
     implementation(project(":kmmsharedmodule"))
     implementation(kotlin("stdlib"))
-    implementation("io.insert-koin:koin-core:$koinVersion")
-    implementation(project(":koin-annotations"))
-    ksp(project(":koin-compiler"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.30")
     implementation("androidx.core:core-ktx:1.5.0")
     implementation("androidx.appcompat:appcompat:1.3.0")

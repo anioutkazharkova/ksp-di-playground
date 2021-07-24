@@ -14,6 +14,9 @@ annotation class Cached(val binds: Array<KClass<*>> = [])
 @Target(AnnotationTarget.CLASS,AnnotationTarget.FUNCTION)
 annotation class Shared(val binds: Array<KClass<*>> = [])
 
+@Target(AnnotationTarget.CLASS,AnnotationTarget.FUNCTION)
+annotation class Entity(val binds: Array<KClass<*>> = [])
+
 @Target(AnnotationTarget.VALUE_PARAMETER)
 annotation class Param()
 

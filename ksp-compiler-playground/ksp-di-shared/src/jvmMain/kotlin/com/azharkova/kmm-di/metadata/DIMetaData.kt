@@ -76,6 +76,51 @@ sealed class DIMetaData {
                 functionParameters,
                 bindings
             )
+
+            class Shared(
+                packageName: String,
+                qualifier: String?,
+                functionName: String,
+                functionParameters: List<ConstructorParameter> = emptyList(),
+                bindings: List<KSDeclaration>
+            ) : ClassDeclarationDefinition(
+                packageName,
+                qualifier,
+                "ScopeType.Weak",
+                functionName,
+                functionParameters,
+                bindings
+            )
+
+            class Entity(
+                packageName: String,
+                qualifier: String?,
+                functionName: String,
+                functionParameters: List<ConstructorParameter> = emptyList(),
+                bindings: List<KSDeclaration>
+            ) : ClassDeclarationDefinition(
+                packageName,
+                qualifier,
+                "ScopeType.Entity",
+                functionName,
+                functionParameters,
+                bindings
+            )
+
+            class Cached(
+                packageName: String,
+                qualifier: String?,
+                functionName: String,
+                functionParameters: List<ConstructorParameter> = emptyList(),
+                bindings: List<KSDeclaration>
+            ) : ClassDeclarationDefinition(
+                packageName,
+                qualifier,
+                "ScopeType.Cached",
+                functionName,
+                functionParameters,
+                bindings
+            )
         }
 
         sealed class ClassDeclarationDefinition(
@@ -98,6 +143,51 @@ sealed class DIMetaData {
                 packageName,
                 qualifier,
                 "ScopeType.Container",
+                className,
+                constructorParameters,
+                bindings
+            )
+
+            class Shared(
+                packageName: String,
+                qualifier: String?,
+                className: String,
+                constructorParameters: List<ConstructorParameter> = emptyList(),
+                bindings: List<KSDeclaration>
+            ) : ClassDeclarationDefinition(
+                packageName,
+                qualifier,
+                "ScopeType.Weak",
+                className,
+                constructorParameters,
+                bindings
+            )
+
+            class Entity(
+                packageName: String,
+                qualifier: String?,
+                className: String,
+                constructorParameters: List<ConstructorParameter> = emptyList(),
+                bindings: List<KSDeclaration>
+            ) : ClassDeclarationDefinition(
+                packageName,
+                qualifier,
+                "ScopeType.Entity",
+                className,
+                constructorParameters,
+                bindings
+            )
+
+            class Cached(
+                packageName: String,
+                qualifier: String?,
+                className: String,
+                constructorParameters: List<ConstructorParameter> = emptyList(),
+                bindings: List<KSDeclaration>
+            ) : ClassDeclarationDefinition(
+                packageName,
+                qualifier,
+                "ScopeType.Cached",
                 className,
                 constructorParameters,
                 bindings

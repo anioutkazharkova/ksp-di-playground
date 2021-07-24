@@ -39,6 +39,39 @@ class DIComponentScanner(
                         createdAtStart = createdAtStart
                     )
                 }
+                DefinitionAnnotation.Shared -> {
+                    DIMetaData.Definition.ClassDeclarationDefinition.Shared(
+                        packageName = packageName,
+                        qualifier = qualifier,
+                        className = className,
+                        constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map {
+                            DIMetaData.ConstructorParameter(name = "${it.type}") }
+                            ?: emptyList(),
+                        bindings = declaredBindings?.map { it.declaration } ?: defaultBindings,
+                    )
+                }
+                DefinitionAnnotation.Cached -> {
+                    DIMetaData.Definition.ClassDeclarationDefinition.Cached(
+                        packageName = packageName,
+                        qualifier = qualifier,
+                        className = className,
+                        constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map {
+                            DIMetaData.ConstructorParameter(name = "${it.type}") }
+                            ?: emptyList(),
+                        bindings = declaredBindings?.map { it.declaration } ?: defaultBindings,
+                    )
+                }
+                DefinitionAnnotation.Entity -> {
+                    DIMetaData.Definition.ClassDeclarationDefinition.Entity(
+                        packageName = packageName,
+                        qualifier = qualifier,
+                        className = className,
+                        constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map {
+                            DIMetaData.ConstructorParameter(name = "${it.type}") }
+                            ?: emptyList(),
+                        bindings = declaredBindings?.map { it.declaration } ?: defaultBindings,
+                    )
+                }
                 DefinitionAnnotation.Graph -> {
                     DIMetaData.Definition.ClassDeclarationDefinition.Graph(
                         packageName = packageName,

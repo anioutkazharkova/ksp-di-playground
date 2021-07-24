@@ -94,6 +94,33 @@ class ContainerScanner(
                             bindings = binds?.map { it.declaration } ?: emptyList()
                         )
                     }
+                    DefinitionAnnotation.Shared -> {
+                        DIMetaData.Definition.FunctionDeclarationDefinition.Graph(
+                            packageName = packageName,
+                            qualifier = qualifier,
+                            functionName = functionName,
+                            functionParameters = ksFunctionDeclaration.parameters.map {DIMetaData.ConstructorParameter() },
+                            bindings = binds?.map { it.declaration } ?: emptyList()
+                        )
+                    }
+                    DefinitionAnnotation.Cached -> {
+                        DIMetaData.Definition.FunctionDeclarationDefinition.Cached(
+                            packageName = packageName,
+                            qualifier = qualifier,
+                            functionName = functionName,
+                            functionParameters = ksFunctionDeclaration.parameters.map {DIMetaData.ConstructorParameter() },
+                            bindings = binds?.map { it.declaration } ?: emptyList()
+                        )
+                    }
+                    DefinitionAnnotation.Entity -> {
+                        DIMetaData.Definition.FunctionDeclarationDefinition.Entity(
+                            packageName = packageName,
+                            qualifier = qualifier,
+                            functionName = functionName,
+                            functionParameters = ksFunctionDeclaration.parameters.map {DIMetaData.ConstructorParameter() },
+                            bindings = binds?.map { it.declaration } ?: emptyList()
+                        )
+                    }
                 }
             }
         }
