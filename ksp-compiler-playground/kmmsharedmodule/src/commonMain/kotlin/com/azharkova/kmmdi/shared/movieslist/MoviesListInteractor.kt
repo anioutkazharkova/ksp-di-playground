@@ -18,14 +18,16 @@ interface IMoviesListInteractor : com.azharkova.kmmdi.shared.base.IInteractor {
 class MoviesListInteractor :
     BaseInteractor<com.azharkova.kmmdi.shared.movieslist.IMoviesListView>(uiDispatcher),
     IMoviesListInteractor {
-    private val moviesService: MoviesService? =  AppConfiguratorContainer.newInstance.resolve<MoviesService>(MoviesService::class) as MoviesService?
+    private val moviesService: MoviesService? by lazy {
+        AppConfiguratorContainer.newInstance.resolve(MoviesService::class) as MoviesService?
+    }
 
     override var presenter: IMoviesListPresenter? = null
 
     private var moviesList: ArrayList<com.azharkova.kmmdi.shared.data.MoviesItem> = arrayListOf()
 
     override fun setup(di: com.azharkova.kmmdi.shared.di.DIManager) {
-       // this.moviesService = di.resolve<MoviesService>(MoviesService::class) as? MoviesService
+        // this.moviesService = di.resolve<MoviesService>(MoviesService::class) as? MoviesService
         print(moviesService)
     }
 
@@ -39,3 +41,4 @@ class MoviesListInteractor :
         }
     }
 }
+
