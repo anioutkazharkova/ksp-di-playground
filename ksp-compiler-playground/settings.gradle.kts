@@ -1,5 +1,4 @@
 
-
 pluginManagement {
     repositories {
 
@@ -19,11 +18,11 @@ pluginManagement {
 rootProject.name = "ksp-multiplatform"
 
 //include(":workload")
-include(":koin-annotations")
-include(":koin-compiler")
-include(":coffee-maker")
-include(":coffee-maker2")
 include(":testksp")
 include(":kmmsharedmodule")
+include(":ksp-annotation")
+
 include(":di-multiplatform-core")
-include(":ksp-multiplatfrom-shared")
+include(":ksp-di-compiler")
+include(":ksp-di-shared")
+

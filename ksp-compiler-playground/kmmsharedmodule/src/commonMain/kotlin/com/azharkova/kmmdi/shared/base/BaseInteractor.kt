@@ -1,11 +1,13 @@
 package com.azharkova.kmmdi.shared.base
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
 abstract class BaseInteractor<T : com.azharkova.kmmdi.shared.base.IView>(private val coroutineContext: CoroutineContext) {
-    protected lateinit var scope: com.azharkova.kmmdi.shared.base.ModuleCoroutineScope
+    protected var scope = ModuleCoroutineScope(Dispatchers.Main + SupervisorJob())
 
     fun attachView() {
         scope = com.azharkova.kmmdi.shared.base.ModuleCoroutineScope(coroutineContext)

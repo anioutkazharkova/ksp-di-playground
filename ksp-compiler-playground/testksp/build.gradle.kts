@@ -51,9 +51,6 @@ repositories {
 dependencies {
     implementation(project(":kmmsharedmodule"))
     implementation(kotlin("stdlib"))
-    implementation("io.insert-koin:koin-core:$koinVersion")
-    implementation(project(":koin-annotations"))
-    ksp(project(":koin-compiler"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.30")
     implementation("androidx.core:core-ktx:1.5.0")
     implementation("androidx.appcompat:appcompat:1.3.0")
@@ -71,6 +68,6 @@ dependencies {
     implementation("com.squareup:kotlinpoet:1.9.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
-
+    implementation("com.android.support:multidex:1.0.3")
     implementation(project(":di-multiplatform-core"))
 }
