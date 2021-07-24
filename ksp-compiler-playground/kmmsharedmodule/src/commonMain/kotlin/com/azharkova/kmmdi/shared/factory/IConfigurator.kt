@@ -6,17 +6,17 @@ import com.azharkova.kmmdi.shared.movieslist.IMoviesListView
 import com.azharkova.kmmdi.shared.movieslist.MoviesListConfigurator
 
 interface IConfigurator {
-    fun create(view: com.azharkova.kmmdi.shared.base.IView): com.azharkova.kmmdi.shared.base.IInteractor?
+    fun create(view: IView): IInteractor?
 }
 
 class ModuleConfig {
     companion object {
-        val instance = com.azharkova.kmmdi.shared.factory.ModuleConfig()
+        val instance = ModuleConfig()
     }
 
-    fun config(view: com.azharkova.kmmdi.shared.base.IView): com.azharkova.kmmdi.shared.base.IInteractor? {
-        if (view is com.azharkova.kmmdi.shared.movieslist.IMoviesListView) {
-            return com.azharkova.kmmdi.shared.movieslist.MoviesListConfigurator.instance.create(view)
+    fun config(view: IView): IInteractor? {
+        if (view is IMoviesListView) {
+            return MoviesListConfigurator.instance.create(view)
         }
         return null
     }

@@ -31,6 +31,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":di-multiplatform-core"))
+               // implementation(project(":ksp-di-shared"))
                 implementation("io.insert-koin:koin-core:$koinVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
@@ -48,6 +49,7 @@ kotlin {
             }
         }
         val androidMain by getting { dependencies {
+            implementation("com.android.support:multidex:1.0.3")
             //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
             implementation("io.ktor:ktor-client-android:$ktorVersion")
             kotlin.srcDir("${buildDir.absolutePath}/generated/ksp/debug/kotlin")
@@ -83,11 +85,18 @@ android {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation(project(":di-multiplatform-core"))
-  implementation("io.insert-koin:koin-core:$koinVersion")
-   implementation(project(":koin-annotations"))
+  //implementation("io.insert-koin:koin-core:$koinVersion")
+   //implementation(project(":koin-annotations"))
+   // implementation(project(":ksp-annotation"))
     //ksp(project(":koin-compiler"))
-    implementation(project(":ksp-multiplatfrom-shared"))
-    ksp(project(":ksp-multiplatfrom-shared"))
+   //implementation(project(":ksp-multiplatfrom-shared"))
+   //ksp(project(":ksp-multiplatfrom-shared"))
+
+    implementation(project(":ksp-di-shared"))
+    ksp(project(":ksp-di-shared"))
+
+    //implementation(project(":ksp-di-compiler"))
+    //ksp(project(":ksp-di-compiler"))
 }
 
 val packForXcode by tasks.creating(Sync::class) {

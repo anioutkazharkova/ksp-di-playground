@@ -11,9 +11,6 @@ sourceSets.main {
     java.srcDirs("build/generated/ksp/main/kotlin")
 }
 
-group = "ru.azharkova"
-version = "1.0-SNAPSHOT"
-
 repositories {
     mavenCentral()
     mavenLocal()

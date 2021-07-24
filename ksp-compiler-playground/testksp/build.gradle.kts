@@ -71,6 +71,6 @@ dependencies {
     implementation("com.squareup:kotlinpoet:1.9.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
-
+    implementation("com.android.support:multidex:1.0.3")
     implementation(project(":di-multiplatform-core"))
 }

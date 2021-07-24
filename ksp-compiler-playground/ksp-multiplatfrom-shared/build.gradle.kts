@@ -34,6 +34,7 @@ kotlin {
                 implementation(project(":di-multiplatform-core"))
 //    implementation("com.squareup:javapoet:1.12.1")
                 implementation(project(":koin-annotations"))
+                implementation(project(":ksp-annotation"))
                 implementation("io.insert-koin:koin-core:$koinVersion")
                 implementation("com.google.devtools.ksp:symbol-processing-api:$kspVersion")
                 //code generation

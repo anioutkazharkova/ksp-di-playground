@@ -10,6 +10,7 @@ import generateClassDeclarationDefinition
 import generateClassModule
 import metadata.KoinMetaData
 import java.io.OutputStream
+import java.util.*
 
 class KoinCodeGenerator(
     val codeGenerator: CodeGenerator,
