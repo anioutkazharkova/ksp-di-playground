@@ -28,12 +28,8 @@ kotlin {
 
         val jvmMain by getting {
             dependencies {
-
-                // implementation(project(":koru"))
                 implementation(kotlin("stdlib"))
                 implementation(project(":di-multiplatform-core"))
-//    implementation("com.squareup:javapoet:1.12.1")
-                //implementation(project(":ksp-annotation"))
                 implementation("com.google.devtools.ksp:symbol-processing-api:$kspVersion")
                 //code generation
                 val kotlinpoetVersion = "1.8.0"

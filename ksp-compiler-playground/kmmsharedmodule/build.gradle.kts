@@ -50,7 +50,6 @@ kotlin {
         }
         val androidMain by getting { dependencies {
             implementation("com.android.support:multidex:1.0.3")
-            //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
             implementation("io.ktor:ktor-client-android:$ktorVersion")
             kotlin.srcDir("${buildDir.absolutePath}/generated/ksp/debug/kotlin")
         }
@@ -67,6 +66,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-ios:$ktorVersion")
 
             }
+            //kotlin.srcDir("${buildDir.absolutePath}/generated/ksp/debug/kotlin")
         }
         val iosTest by getting
     }
