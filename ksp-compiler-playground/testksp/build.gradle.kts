@@ -50,6 +50,7 @@ repositories {
 
 dependencies {
     implementation(project(":kmmsharedmodule"))
+
     implementation(kotlin("stdlib"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.30")
     implementation("androidx.core:core-ktx:1.5.0")
@@ -65,7 +66,7 @@ dependencies {
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("com.squareup.picasso:picasso:2.71828")
     testImplementation("junit:junit:4.13.2")
-    implementation("com.squareup:kotlinpoet:1.9.0")
+    implementation("com.squareup:kotlinpoet:1.10.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
     implementation("com.android.support:multidex:1.0.3")

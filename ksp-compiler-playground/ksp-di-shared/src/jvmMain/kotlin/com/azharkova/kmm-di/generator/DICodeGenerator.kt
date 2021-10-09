@@ -41,7 +41,7 @@ fun generateClassModule(classFile: OutputStream, module: DIMetaData.Container) {
         """
             package com.azharkova.kmm_di.ksp.generated
             import com.azharkova.di.container.*
-            import kotlin.native.concurrent.ThreadLocal
+            //import kotlin.native.concurrent.ThreadLocal
             import com.azharkova.kmmdi.shared.*
             import com.azharkova.di.scope.*
             import com.azharkova.kmmdi.shared.di.DIManager
@@ -60,7 +60,7 @@ classFile.appendText(generatedClass+"\n")
     classFile.appendText("\n " +
             "}" + "\n" +
             "" +
-            "\n@ThreadLocal\ncompanion object {\n" +
+            "\n//@ThreadLocal\ncompanion object {\n" +
             "  \n" + "val newInstance = ${module.name}Container()" +
             " \n}\n}")
     classFile.flush()

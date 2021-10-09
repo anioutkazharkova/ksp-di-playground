@@ -32,7 +32,7 @@ class MoviesListInteractor :
     }
 
     override fun loadMovies() {
-        scope.launch(ioDispatcher) {
+        scope.launch {
             print(moviesService == null)
             val result = moviesService?.loadMovies()?.results
             moviesList = arrayListOf()

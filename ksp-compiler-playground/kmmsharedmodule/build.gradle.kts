@@ -4,7 +4,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     kotlin("plugin.serialization") //version "1.5.10"
-    id("com.google.devtools.ksp") version "1.5.10-1.0.0-beta01"
+    id("com.google.devtools.ksp") version "1.5.31-1.0.0"
     //kotlin("jvm")
 }
 
