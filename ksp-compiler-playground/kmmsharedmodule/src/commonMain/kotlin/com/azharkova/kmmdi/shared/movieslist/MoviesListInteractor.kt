@@ -5,28 +5,31 @@ import com.azharkova.kmmdi.shared.base.BaseInteractor
 import com.azharkova.kmmdi.shared.base.IInteractor
 import com.azharkova.kmmdi.shared.data.MoviesItem
 import com.azharkova.kmmdi.shared.di.DIManager
-import com.azharkova.kmmdi.shared.MoviesService
+import com.azharkova.kmmdi.shared.service.MoviesService
 import com.azharkova.kmmdi.shared.util.ioDispatcher
 import com.azharkova.kmmdi.shared.util.uiDispatcher
+import com.azharkova.ksp_annotation.Interactor
+import com.azharkova.ksp_annotation.Presenter
 import kotlinx.coroutines.launch
 
-interface IMoviesListInteractor : com.azharkova.kmmdi.shared.base.IInteractor {
-    var presenter: IMoviesListPresenter?
+interface IMoviesListInteractor : IInteractor {
     fun loadMovies()
 }
 
+@Interactor
 class MoviesListInteractor :
-    BaseInteractor<com.azharkova.kmmdi.shared.movieslist.IMoviesListView>(uiDispatcher),
+    BaseInteractor<IMoviesListView>(uiDispatcher),
     IMoviesListInteractor {
     private val moviesService: MoviesService? by lazy {
         AppConfiguratorContainer.newInstance.resolve(MoviesService::class) as MoviesService?
     }
 
-    override var presenter: IMoviesListPresenter? = null
+    @Presenter
+    var presenter: IMoviesListPresenter? = null
 
-    private var moviesList: ArrayList<com.azharkova.kmmdi.shared.data.MoviesItem> = arrayListOf()
+    private var moviesList: ArrayList<MoviesItem> = arrayListOf()
 
-    override fun setup(di: com.azharkova.kmmdi.shared.di.DIManager) {
+    override fun setup(di: DIManager) {
         // this.moviesService = di.resolve<MoviesService>(MoviesService::class) as? MoviesService
         print(moviesService)
     }

@@ -1,12 +1,15 @@
-package kmm_di.metadata
+package com.azharkova.kmm
 
+import com.azharkova.kmm.configurator.ConfiguratorContainerMetaData
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSType
+import kmm_di.metadata.getDefinitionAnnotation
+import kmm_di.metadata.getStringQualifier
 
-class ContainerScanner(
+class ConfiguratorScanner(
     val logger: KSPLogger
 ) {
 
@@ -20,17 +23,17 @@ class ContainerScanner(
         logger.warn("container(Class) componentScan=$componentScan", element)
 
         val name = "$element"
-        val moduleMetadata = DIContainerMetaData.Container(
+        val moduleMetadata = ConfiguratorContainerMetaData.Container(
             packageName = modulePackage,
             name = name,
-            type = DIContainerMetaData.ElementType.CLASS,
+            type = ConfiguratorContainerMetaData.ElementType.CLASS,
             componentScan = componentScan
         )
 
         val annotatedFunctions = declaration.getAllFunctions()
             .filter {
                 it.annotations.map { a -> a.shortName.asString() }.any { a ->
-                    DefinitionAnnotation.isValidAnnotation(
+                    ConfigAnnotation.isValidAnnotation(
                         a
                     )
                 }
@@ -44,15 +47,15 @@ class ContainerScanner(
         return ContainerIndex(modulePackage, moduleMetadata)
     }
 
-    private fun getComponentScan(declaration: KSClassDeclaration): DIContainerMetaData.Container.ComponentScan? {
+    private fun getComponentScan(declaration: KSClassDeclaration): ConfiguratorContainerMetaData.Container.ComponentScan? {
         val componentScan = declaration.annotations.firstOrNull { it.shortName.asString() == "ComponentScan" }
         return componentScan?.let { a ->
             val value : String = a.arguments.firstOrNull { arg -> arg.name?.asString() == "value" }?.value as? String? ?: ""
-            DIContainerMetaData.Container.ComponentScan(value)
+           ConfiguratorContainerMetaData.Container.ComponentScan(value)
         }
     }
 
-    private fun addDefinition(element: KSAnnotated): DIContainerMetaData.Definition? {
+    private fun addDefinition(element: KSAnnotated): ConfiguratorContainerMetaData.Definition? {
         logger.warn("definition(function) -> $element", element)
 
         val ksFunctionDeclaration = (element as KSFunctionDeclaration)
@@ -70,54 +73,35 @@ class ContainerScanner(
                 val binds = annotation.arguments.firstOrNull { it.name?.asString() == "binds" }?.value as? List<KSType>?
                 logger.warn("definition(function) -> binds=$binds", annotation)
 
-                when (DefinitionAnnotation.valueOf(name)) {
-                    DefinitionAnnotation.Single -> {
+                when (ConfigAnnotation.valueOf(name)) {
+                    ConfigAnnotation.Interactor -> {
                         val createdAtStart: Boolean =
                             annotation.arguments.firstOrNull { it.name?.asString() == "createdAtStart" }?.value as Boolean?
                                 ?: false
                         logger.warn("definition(function) -> createdAtStart=$createdAtStart", annotation)
-                       DIContainerMetaData.Definition.FunctionDeclarationDefinition.Single(
+                        ConfiguratorContainerMetaData.Definition.FunctionDeclarationDefinition.Interactor(
                             packageName = packageName,
                             qualifier = qualifier,
                             functionName = functionName,
-                            functionParameters = ksFunctionDeclaration.parameters.map { DIContainerMetaData.ConstructorParameter() },
-                            createdAtStart = createdAtStart,
+                            functionParameters = ksFunctionDeclaration.parameters.map { ConfiguratorContainerMetaData.ConstructorParameter() },
                             bindings = binds?.map { it.declaration } ?: emptyList()
                         )
                     }
-                    DefinitionAnnotation.Graph -> {
-                        DIContainerMetaData.Definition.FunctionDeclarationDefinition.Graph(
+                    ConfigAnnotation.Presenter -> {
+                        ConfiguratorContainerMetaData.Definition.FunctionDeclarationDefinition.Presenter(
                             packageName = packageName,
                             qualifier = qualifier,
                             functionName = functionName,
-                            functionParameters = ksFunctionDeclaration.parameters.map {DIContainerMetaData.ConstructorParameter() },
+                            functionParameters = ksFunctionDeclaration.parameters.map { ConfiguratorContainerMetaData.ConstructorParameter() },
                             bindings = binds?.map { it.declaration } ?: emptyList()
                         )
                     }
-                    DefinitionAnnotation.Shared -> {
-                        DIContainerMetaData.Definition.FunctionDeclarationDefinition.Graph(
+                    ConfigAnnotation.View -> {
+                        ConfiguratorContainerMetaData.Definition.FunctionDeclarationDefinition.View(
                             packageName = packageName,
                             qualifier = qualifier,
                             functionName = functionName,
-                            functionParameters = ksFunctionDeclaration.parameters.map {DIContainerMetaData.ConstructorParameter() },
-                            bindings = binds?.map { it.declaration } ?: emptyList()
-                        )
-                    }
-                    DefinitionAnnotation.Cached -> {
-                        DIContainerMetaData.Definition.FunctionDeclarationDefinition.Cached(
-                            packageName = packageName,
-                            qualifier = qualifier,
-                            functionName = functionName,
-                            functionParameters = ksFunctionDeclaration.parameters.map {DIContainerMetaData.ConstructorParameter() },
-                            bindings = binds?.map { it.declaration } ?: emptyList()
-                        )
-                    }
-                    DefinitionAnnotation.Entity -> {
-                        DIContainerMetaData.Definition.FunctionDeclarationDefinition.Entity(
-                            packageName = packageName,
-                            qualifier = qualifier,
-                            functionName = functionName,
-                            functionParameters = ksFunctionDeclaration.parameters.map {DIContainerMetaData.ConstructorParameter() },
+                            functionParameters = ksFunctionDeclaration.parameters.map { ConfiguratorContainerMetaData.ConstructorParameter() },
                             bindings = binds?.map { it.declaration } ?: emptyList()
                         )
                     }
@@ -126,3 +110,4 @@ class ContainerScanner(
         }
     }
 }
+

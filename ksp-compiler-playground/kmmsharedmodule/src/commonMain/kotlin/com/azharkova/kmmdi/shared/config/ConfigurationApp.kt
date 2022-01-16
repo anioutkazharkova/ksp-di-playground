@@ -2,8 +2,8 @@ package com.azharkova.kmmdi.shared.config
 
 import com.azharkova.di.scope.ScopeType
 import com.azharkova.kmmdi.shared.di.DIManager
-import com.azharkova.kmmdi.shared.MoviesService
-import com.azharkova.kmmdi.shared.NetworkClient
+import com.azharkova.kmmdi.shared.service.MoviesService
+import com.azharkova.kmmdi.shared.service.NetworkClient
 
 class ConfigurationApp {
     val appContainer: DIManager =

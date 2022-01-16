@@ -3,7 +3,7 @@ package kmm_di.metadata
 
 import com.google.devtools.ksp.symbol.KSDeclaration
 
-sealed class DIMetaData {
+sealed class DIContainerMetaData {
 
     data class Container(
         val packageName: String,
@@ -11,7 +11,7 @@ sealed class DIMetaData {
         val definitions: MutableList<Definition> = mutableListOf(),
         val type: ElementType = ElementType.FIELD,
         val componentScan: ComponentScan? = null
-    ) : DIMetaData() {
+    ) : DIContainerMetaData() {
         data class ComponentScan(val packageName: String = "")
 
         fun acceptDefinition(defPackageName: String): Boolean {
@@ -35,7 +35,7 @@ sealed class DIMetaData {
         val qualifier: String? = null,
         val keyword: String,
         val bindings: List<KSDeclaration>
-    ) : DIMetaData() {
+    ) : DIContainerMetaData() {
 
         sealed class FunctionDeclarationDefinition(
             packageName: String,
@@ -57,6 +57,36 @@ sealed class DIMetaData {
                 packageName,
                 qualifier,
                 "single",
+                functionName,
+                functionParameters,
+                bindings
+            )
+            class Cached(
+                packageName: String,
+                qualifier: String?,
+                functionName: String,
+                functionParameters: List<ConstructorParameter> = emptyList(),
+                val createdAtStart: Boolean = false,
+                bindings: List<KSDeclaration>
+            ) : FunctionDeclarationDefinition(
+                packageName,
+                qualifier,
+                "cached",
+                functionName,
+                functionParameters,
+                bindings
+            )
+            class Shared(
+                packageName: String,
+                qualifier: String?,
+                functionName: String,
+                functionParameters: List<ConstructorParameter> = emptyList(),
+                val createdAtStart: Boolean = false,
+                bindings: List<KSDeclaration>
+            ) : FunctionDeclarationDefinition(
+                packageName,
+                qualifier,
+                "shared",
                 functionName,
                 functionParameters,
                 bindings
@@ -86,6 +116,36 @@ sealed class DIMetaData {
             val constructorParameters: List<ConstructorParameter> = emptyList(),
             bindings: List<KSDeclaration>,
         ) : Definition(packageName, qualifier, keyword, bindings) {
+
+            class Shared(
+                packageName: String,
+                qualifier: String?,
+                className: String,
+                constructorParameters: List<ConstructorParameter> = emptyList(),
+                bindings: List<KSDeclaration>
+            ) : ClassDeclarationDefinition(
+                packageName,
+                qualifier,
+                "shared",
+                className,
+                constructorParameters,
+                bindings
+            )
+
+            class Cached(
+                packageName: String,
+                qualifier: String?,
+                className: String,
+                constructorParameters: List<ConstructorParameter> = emptyList(),
+                bindings: List<KSDeclaration>
+            ) : ClassDeclarationDefinition(
+                packageName,
+                qualifier,
+                "cached",
+                className,
+                constructorParameters,
+                bindings
+            )
 
             class Single(
                 packageName: String,

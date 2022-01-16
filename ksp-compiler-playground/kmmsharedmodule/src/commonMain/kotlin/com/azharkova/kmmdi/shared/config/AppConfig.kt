@@ -4,5 +4,5 @@ import com.azharkova.ksp_annotation.ComponentScan
 import com.azharkova.ksp_annotation.Container
 
 @Container
-@ComponentScan("com.azharkova.kmmdi.shared")
+@ComponentScan("com.azharkova.kmmdi.shared.service")
 class AppConfigurator

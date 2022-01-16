@@ -1,8 +1,8 @@
-package com.azharkova.kmmdi.shared
+package com.azharkova.kmmdi.shared.service
 
 import com.azharkova.ksp_annotation.*
 import com.azharkova.kmmdi.shared.data.MoviesList
-import com.azharkova.kmmdi.shared.network.Configuration
+import com.azharkova.kmmdi.shared.service.network.Configuration
 
 @Single
 class MoviesService(val networkClient: NetworkClient?) {

@@ -6,11 +6,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-abstract class BaseInteractor<T : com.azharkova.kmmdi.shared.base.IView>(private val coroutineContext: CoroutineContext) {
+abstract class BaseInteractor<T : IView>(private val coroutineContext: CoroutineContext) {
     protected var scope = ModuleCoroutineScope(Dispatchers.Main + SupervisorJob())
 
     fun attachView() {
-        scope = com.azharkova.kmmdi.shared.base.ModuleCoroutineScope(coroutineContext)
+        scope = ModuleCoroutineScope(coroutineContext)
     }
 
     fun detachView() {

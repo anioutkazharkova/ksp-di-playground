@@ -11,7 +11,7 @@ class DIComponentScanner(
     val logger: KSPLogger,
 ) {
 
-    fun createDefinition(element: KSAnnotated): DIMetaData.Definition {
+    fun createDefinition(element: KSAnnotated): DIContainerMetaData.Definition {
         logger.warn("definition(class) -> $element", element)
         val ksClassDeclaration = (element as KSClassDeclaration)
         val packageName = ksClassDeclaration.containingFile!!.packageName.asString()
@@ -27,22 +27,42 @@ class DIComponentScanner(
                     val createdAtStart: Boolean =
                         annotation.arguments.firstOrNull { it.name?.asString() == "createdAtStart" }?.value as Boolean?
                             ?: false
-                    DIMetaData.Definition.ClassDeclarationDefinition.Single(
+                    DIContainerMetaData.Definition.ClassDeclarationDefinition.Single(
                         packageName = packageName,
                         qualifier = qualifier,
                         className = className,
-                        constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map { DIMetaData.ConstructorParameter() }
+                        constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map { DIContainerMetaData.ConstructorParameter() }
                             ?: emptyList(),
                         bindings = declaredBindings?.map { it.declaration } ?: defaultBindings,
                         createdAtStart = createdAtStart
                     )
                 }
                 DefinitionAnnotation.Graph -> {
-                    DIMetaData.Definition.ClassDeclarationDefinition.Graph(
+                    DIContainerMetaData.Definition.ClassDeclarationDefinition.Graph(
                         packageName = packageName,
                         qualifier = qualifier,
                         className = className,
-                        constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map { DIMetaData.ConstructorParameter() }
+                        constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map { DIContainerMetaData.ConstructorParameter() }
+                            ?: emptyList(),
+                        bindings = declaredBindings?.map { it.declaration } ?: defaultBindings
+                    )
+                }
+                DefinitionAnnotation.Cached -> {
+                    DIContainerMetaData.Definition.ClassDeclarationDefinition.Cached(
+                        packageName = packageName,
+                        qualifier = qualifier,
+                        className = className,
+                        constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map { DIContainerMetaData.ConstructorParameter() }
+                            ?: emptyList(),
+                        bindings = declaredBindings?.map { it.declaration } ?: defaultBindings
+                    )
+                }
+                DefinitionAnnotation.Shared -> {
+                    DIContainerMetaData.Definition.ClassDeclarationDefinition.Shared(
+                        packageName = packageName,
+                        qualifier = qualifier,
+                        className = className,
+                        constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map { DIContainerMetaData.ConstructorParameter() }
                             ?: emptyList(),
                         bindings = declaredBindings?.map { it.declaration } ?: defaultBindings
                     )

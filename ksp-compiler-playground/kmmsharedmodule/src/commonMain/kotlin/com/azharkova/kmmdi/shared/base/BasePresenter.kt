@@ -1,7 +1,7 @@
 package com.azharkova.kmmdi.shared.base
 
-abstract class BasePresenter<T : com.azharkova.kmmdi.shared.base.IView> :
-    com.azharkova.kmmdi.shared.base.IPresenter {
+abstract class BasePresenter<T : IView> :
+    IPresenter {
     open var view: T? = null
 
     fun onAttachView(view: T) {

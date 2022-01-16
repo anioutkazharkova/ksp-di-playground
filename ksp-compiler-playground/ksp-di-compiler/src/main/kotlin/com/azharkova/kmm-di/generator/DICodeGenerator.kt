@@ -2,44 +2,31 @@ package kmm_di.generator
 
 import appendText
 import com.google.devtools.ksp.symbol.KSDeclaration
-import kmm_di.metadata.DIMetaData
+import kmm_di.metadata.DIContainerMetaData
 import java.io.OutputStream
-import java.util.*
 
-val DEFAULT_MODULE_HEADER = """
-        package com.azharkova.kmm_di.ksp.generated
-    
-        import org.koin.core.KoinApplication
-        import org.koin.core.module.Module
-        import org.koin.dsl.module
-        import org.koin.dsl.bind
-        import org.koin.dsl.binds
-        
-        fun KoinApplication.defaultModule() = modules(defaultModule)
-        val defaultModule = module {
-    """.trimIndent()
 
 val DEFAULT_MODULE_FOOTER = """
         }
     """.trimIndent()
 
-fun OutputStream.generateFunctionDeclarationDefinition(def: DIMetaData.Definition.FunctionDeclarationDefinition) {
+fun OutputStream.generateFunctionDeclarationDefinition(def: DIContainerMetaData.Definition.FunctionDeclarationDefinition) {
     val ctor = generateConstructor(def.parameters)
     val binds = generateBindings(def.bindings)
     appendText("\n\t\t\t\t${def.keyword} { moduleInstance.${def.functionName}$ctor } $binds")
 }
 
 
-fun OutputStream.generateClassDeclarationDefinition(def: DIMetaData.Definition.ClassDeclarationDefinition) {
+fun OutputStream.generateClassDeclarationDefinition(def: DIContainerMetaData.Definition.ClassDeclarationDefinition) {
     val param =
-        if (def.constructorParameters.filter { it.type == DIMetaData.ConstructorParameterType.PARAMETER_INJECT }
+        if (def.constructorParameters.filter { it.type == DIContainerMetaData.ConstructorParameterType.PARAMETER_INJECT }
                 .isEmpty()) "" else " params ->"
     val ctor = generateConstructor(def.constructorParameters)
     val binds = generateBindings(def.bindings)
     appendText("\n\t\t\t\t${def.keyword} { $param${def.packageName}.${def.className}$ctor } $binds")
 }
 
-fun generateClassModule(classFile: OutputStream, module: DIMetaData.Container) {
+fun generateClassModule(classFile: OutputStream, module: DIContainerMetaData.Container) {
     classFile.appendText(
         """
             package com.azharkova.kmm_di.ksp.generated
@@ -53,14 +40,13 @@ fun generateClassModule(classFile: OutputStream, module: DIMetaData.Container) {
     classFile.appendText("\nval $generatedField = module {")
     classFile.appendText("\n\t\t\t\tval moduleInstance = $classModule()")
     // Definitions here
-    module.definitions.filterIsInstance<DIMetaData.Definition.FunctionDeclarationDefinition>().forEach { def ->
+    module.definitions.filterIsInstance<DIContainerMetaData.Definition.FunctionDeclarationDefinition>().forEach { def ->
         classFile.generateFunctionDeclarationDefinition(def)
     }
-    module.definitions.filterIsInstance<DIMetaData.Definition.ClassDeclarationDefinition>().forEach { def ->
+    module.definitions.filterIsInstance<DIContainerMetaData.Definition.ClassDeclarationDefinition>().forEach { def ->
         classFile.generateClassDeclarationDefinition(def)
     }
     classFile.appendText("\n}")
-    classFile.appendText("\nval $classModule.module : org.koin.core.module.Module get() = $generatedField")
     classFile.flush()
     classFile.close()
 }
@@ -79,9 +65,9 @@ fun generateBinding(declaration: KSDeclaration): String {
     return "$packageName.$className::class"
 }
 
-fun generateConstructor(constructorParameters: List<DIMetaData.ConstructorParameter>): String {
+fun generateConstructor(constructorParameters: List<DIContainerMetaData.ConstructorParameter>): String {
     return constructorParameters.joinToString(prefix = "(", separator = ",", postfix = ")") {
         print(it?.qualifier?.orEmpty())
-        if (it.type == DIMetaData.ConstructorParameterType.DEPENDENCY) "get()" else "params.get()"
+        if (it.type == DIContainerMetaData.ConstructorParameterType.DEPENDENCY) "get()" else "params.get()"
     }
 }

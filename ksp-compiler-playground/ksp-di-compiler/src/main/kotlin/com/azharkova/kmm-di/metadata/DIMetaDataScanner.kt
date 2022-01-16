@@ -12,14 +12,14 @@ class DIMetaDataScanner (
     val logger: KSPLogger
 ) {
 
-    lateinit var moduleMap: Map<String, DIMetaData.Container>
+    lateinit var moduleMap: Map<String, DIContainerMetaData.Container>
     private val moduleMetadataScanner = ContainerScanner(logger)
     private val componentMetadataScanner = DIComponentScanner(logger)
 
     fun scanAllMetaData(
         resolver: Resolver,
-        defaultModule: DIMetaData.Container
-    ): Pair<Map<String, DIMetaData.Container>, List<DIMetaData.Definition>> {
+        defaultModule: DIContainerMetaData.Container
+    ): Pair<Map<String, DIContainerMetaData.Container>, List<DIContainerMetaData.Definition>> {
         return Pair(
             scanContainerModules(resolver, defaultModule).toSortedMap(),
             scanComponents(resolver, defaultModule)
@@ -28,8 +28,8 @@ class DIMetaDataScanner (
 
     private fun scanContainerModules(
         resolver: Resolver,
-        defaultModule: DIMetaData.Container
-    ): Map<String, DIMetaData.Container> {
+        defaultModule: DIContainerMetaData.Container
+    ): Map<String, DIContainerMetaData.Container> {
 
         logger.warn("scan modules ...")
         // class modules
@@ -43,8 +43,8 @@ class DIMetaDataScanner (
 
     private fun scanComponents(
         resolver: Resolver,
-        defaultModule: DIMetaData.Container
-    ): List<DIMetaData.Definition> {
+        defaultModule: DIContainerMetaData.Container
+    ): List<DIContainerMetaData.Definition> {
         // component scan
         logger.warn("scan definitions ...")
 
@@ -58,15 +58,15 @@ class DIMetaDataScanner (
 
     private fun Resolver.scanDefinition(
         annotationClass: KClass<*>,
-        mapDefinition: (KSAnnotated) -> DIMetaData.Definition
-    ): List<DIMetaData.Definition> {
+        mapDefinition: (KSAnnotated) -> DIContainerMetaData.Definition
+    ): List<DIContainerMetaData.Definition> {
         return getSymbolsWithAnnotation(annotationClass.qualifiedName!!)
             .filter { it is KSClassDeclaration && it.validate() }
             .mapNotNull { mapDefinition(it) }
             .toList()
     }
 
-    private fun addToModule(definition: DIMetaData.Definition, defaultModule: DIMetaData.Container) {
+    private fun addToModule(definition: DIContainerMetaData.Definition, defaultModule: DIContainerMetaData.Container) {
         val definitionPackage = definition.packageName
         val foundModule = moduleMap.values.firstOrNull { it.acceptDefinition(definitionPackage) }
         val module = foundModule ?: defaultModule
@@ -75,4 +75,4 @@ class DIMetaDataScanner (
     }
 }
 
-    typealias ContainerIndex = Pair<String, DIMetaData.Container>
+    typealias ContainerIndex = Pair<String, DIContainerMetaData.Container>

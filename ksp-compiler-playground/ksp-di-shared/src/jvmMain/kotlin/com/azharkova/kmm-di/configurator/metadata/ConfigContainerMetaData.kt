@@ -1,9 +1,10 @@
-package kmm_di.metadata
+package com.azharkova.kmm.configurator
 
 
+import com.azharkova.kmm.ConfigAnnotation
 import com.google.devtools.ksp.symbol.KSDeclaration
 
-sealed class DIMetaData {
+sealed class ConfiguratorContainerMetaData {
 
     data class Container(
         val packageName: String,
@@ -11,7 +12,7 @@ sealed class DIMetaData {
         val definitions: MutableList<Definition> = mutableListOf(),
         val type: ElementType = ElementType.FIELD,
         val componentScan: ComponentScan? = null
-    ) : DIMetaData() {
+    ) :ConfiguratorContainerMetaData() {
         data class ComponentScan(val packageName: String = "")
 
         fun acceptDefinition(defPackageName: String): Boolean {
@@ -35,7 +36,7 @@ sealed class DIMetaData {
         val qualifier: String? = null,
         val keyword: String,
         val bindings: List<KSDeclaration>
-    ) : DIMetaData() {
+    ) : ConfiguratorContainerMetaData() {
 
         sealed class FunctionDeclarationDefinition(
             packageName: String,
@@ -46,7 +47,7 @@ sealed class DIMetaData {
             bindings: List<KSDeclaration>
         ) : Definition(packageName, qualifier, keyword, bindings) {
 
-            class Single(
+            class Presenter(
                 packageName: String,
                 qualifier: String?,
                 functionName: String,
@@ -56,13 +57,13 @@ sealed class DIMetaData {
             ) : FunctionDeclarationDefinition(
                 packageName,
                 qualifier,
-                "ScopeType.Container",
+                "Presenter",
                 functionName,
                 functionParameters,
                 bindings
             )
 
-            class Graph(
+            class Interactor(
                 packageName: String,
                 qualifier: String?,
                 functionName: String,
@@ -71,13 +72,13 @@ sealed class DIMetaData {
             ) : FunctionDeclarationDefinition(
                 packageName,
                 qualifier,
-                "ScopeType.Graph",
+                "Interactor",
                 functionName,
                 functionParameters,
                 bindings
             )
 
-            class Shared(
+            class View(
                 packageName: String,
                 qualifier: String?,
                 functionName: String,
@@ -86,37 +87,7 @@ sealed class DIMetaData {
             ) : ClassDeclarationDefinition(
                 packageName,
                 qualifier,
-                "ScopeType.Weak",
-                functionName,
-                functionParameters,
-                bindings
-            )
-
-            class Entity(
-                packageName: String,
-                qualifier: String?,
-                functionName: String,
-                functionParameters: List<ConstructorParameter> = emptyList(),
-                bindings: List<KSDeclaration>
-            ) : ClassDeclarationDefinition(
-                packageName,
-                qualifier,
-                "ScopeType.Entity",
-                functionName,
-                functionParameters,
-                bindings
-            )
-
-            class Cached(
-                packageName: String,
-                qualifier: String?,
-                functionName: String,
-                functionParameters: List<ConstructorParameter> = emptyList(),
-                bindings: List<KSDeclaration>
-            ) : ClassDeclarationDefinition(
-                packageName,
-                qualifier,
-                "ScopeType.Cached",
+                "View",
                 functionName,
                 functionParameters,
                 bindings
@@ -132,23 +103,22 @@ sealed class DIMetaData {
             bindings: List<KSDeclaration>,
         ) : Definition(packageName, qualifier, keyword, bindings) {
 
-            class Single(
+            class Presenter(
                 packageName: String,
                 qualifier: String?,
                 className: String,
                 constructorParameters: List<ConstructorParameter> = emptyList(),
-                val createdAtStart: Boolean,
                 bindings: List<KSDeclaration>
             ) : ClassDeclarationDefinition(
                 packageName,
                 qualifier,
-                "ScopeType.Container",
+                "Presenter",
                 className,
                 constructorParameters,
                 bindings
             )
 
-            class Shared(
+            class Interactor(
                 packageName: String,
                 qualifier: String?,
                 className: String,
@@ -157,13 +127,13 @@ sealed class DIMetaData {
             ) : ClassDeclarationDefinition(
                 packageName,
                 qualifier,
-                "ScopeType.Weak",
+                "Interactor",
                 className,
                 constructorParameters,
                 bindings
             )
 
-            class Entity(
+            class View(
                 packageName: String,
                 qualifier: String?,
                 className: String,
@@ -172,37 +142,7 @@ sealed class DIMetaData {
             ) : ClassDeclarationDefinition(
                 packageName,
                 qualifier,
-                "ScopeType.Entity",
-                className,
-                constructorParameters,
-                bindings
-            )
-
-            class Cached(
-                packageName: String,
-                qualifier: String?,
-                className: String,
-                constructorParameters: List<ConstructorParameter> = emptyList(),
-                bindings: List<KSDeclaration>
-            ) : ClassDeclarationDefinition(
-                packageName,
-                qualifier,
-                "ScopeType.Cached",
-                className,
-                constructorParameters,
-                bindings
-            )
-
-            class Graph(
-                packageName: String,
-                qualifier: String?,
-                className: String,
-                constructorParameters: List<ConstructorParameter> = emptyList(),
-                bindings: List<KSDeclaration>
-            ) : ClassDeclarationDefinition(
-                packageName,
-                qualifier,
-                "ScopeType.Graph",
+                "View",
                 className,
                 constructorParameters,
                 bindings

@@ -1,4 +1,4 @@
-package com.azharkova.kmmdi.shared
+package com.azharkova.kmmdi.shared.service
 
 import com.azharkova.ksp_annotation.*
 import io.ktor.client.*
@@ -26,7 +26,7 @@ class NetworkClient {
         val json = httpClient.get<String> {
             url {
                 protocol = URLProtocol.HTTPS
-                host = com.azharkova.kmmdi.shared.network.Configuration.BASE_RAW_URL
+                host = com.azharkova.kmmdi.shared.service.network.Configuration.BASE_RAW_URL
                 encodedPath = url
             }
         }

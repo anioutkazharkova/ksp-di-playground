@@ -35,10 +35,11 @@ kotlin {
                 implementation("io.insert-koin:koin-core:$koinVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0-RC")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.1")
                // implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
                 implementation("io.ktor:ktor-client-serialization:$ktorVersion")
-                kotlin.srcDir("${buildDir.absolutePath}/generated/ksp/debug/kotlin")
+                kotlin.srcDir("${buildDir.absolutePath}/generated/ksp/androidDebug/kotlin")
+               // kotlin.srcDir("${buildDir.absolutePath}/generated/ksp/debug/kotlin")
             }
 
         }
@@ -51,7 +52,8 @@ kotlin {
         val androidMain by getting { dependencies {
             implementation("com.android.support:multidex:1.0.3")
             implementation("io.ktor:ktor-client-android:$ktorVersion")
-            kotlin.srcDir("${buildDir.absolutePath}/generated/ksp/debug/kotlin")
+           kotlin.srcDir("${buildDir.absolutePath}/generated/ksp/androidDebug/kotlin")
+            //kotlin.srcDir("${buildDir.absolutePath}/generated/ksp/debug/kotlin")
         }
         }
         val androidTest by getting {
@@ -66,7 +68,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-ios:$ktorVersion")
 
             }
-            //kotlin.srcDir("${buildDir.absolutePath}/generated/ksp/debug/kotlin")
+           kotlin.srcDir("${buildDir.absolutePath}/generated/ksp/iosX64Main/kotlin")
         }
         val iosTest by getting
     }

@@ -1,44 +1,34 @@
-package kmm_di.generator
-
+package kmm_di.configurator.generator
 
 import appendText
+import com.azharkova.kmm.configurator.ConfiguratorContainerMetaData
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.KSPLogger
-import kmm_di.metadata.DIContainerMetaData
 import java.io.OutputStream
 
-class DICodeGenerator(
+class ConfigCodeGenerator(
     val codeGenerator: CodeGenerator,
     val logger: KSPLogger
 ) {
 
     fun generateModules(
-        moduleMap: Map<String, DIContainerMetaData.Container>,
-        defaultModule: DIContainerMetaData.Container
+        moduleMap: Map<String, ConfiguratorContainerMetaData.Container>,
+        defaultModule: ConfiguratorContainerMetaData.Container
     ) {
         logger.warn("generate ${moduleMap.size} modules ...")
         moduleMap.values.forEachIndexed { index, module ->
-            if (index == 0) {
-                val file = codeGenerator.getDefaultFile()
-                file.appendText(DEFAULT_MODULE_HEADER)
-            }
             generateModule(module)
-            if (index == moduleMap.values.size - 1) {
-                generateModule(defaultModule)
-                val file = codeGenerator.getDefaultFile()
-                file.appendText("\n" + DEFAULT_MODULE_FOOTER)
-            }
         }
     }
 
-    private fun generateModule(module: DIContainerMetaData.Container) {
+    private fun generateModule(module: ConfiguratorContainerMetaData.Container) {
         logger.warn("generate $module - ${module.type}")
         codeGenerator.getDefaultFile().let { defaultFile ->
             if (module.definitions.isNotEmpty()) {
                 when (module.type) {
-                    DIContainerMetaData.ElementType.FIELD -> defaultFile.generateFieldModule(module)
-                    DIContainerMetaData.ElementType.CLASS -> {
+                    ConfiguratorContainerMetaData.ElementType.FIELD -> defaultFile.generateFieldModule(module)
+                    ConfiguratorContainerMetaData.ElementType.CLASS -> {
                         val moduleFile = codeGenerator.getFile(fileName = "${module.name}Gen")
                         generateClassModule(moduleFile, module)
                     }
@@ -55,29 +45,19 @@ class DICodeGenerator(
     }
 
     fun generateDefaultDefinitions(
-        definitions: List<DIContainerMetaData.Definition>
+        definitions: List<ConfiguratorContainerMetaData.Definition>
     ) {
         logger.warn("generate default module")
         definitions.forEachIndexed { index, def ->
-            if (index == 0) {
-                codeGenerator.getDefaultFile().apply {
-                    appendText(DEFAULT_MODULE_HEADER)
-                }
-            }
             logger.warn("generate $def")
-            if (def is DIContainerMetaData.Definition.ClassDeclarationDefinition) {
+            if (def is ConfiguratorContainerMetaData.Definition.ClassDeclarationDefinition) {
                 codeGenerator.getDefaultFile().generateClassDeclarationDefinition(def)
-            }
-            if (index == definitions.size - 1) {
-                codeGenerator.getDefaultFile().apply {
-                    appendText(DEFAULT_MODULE_FOOTER)
-                }
             }
         }
     }
 
-    private fun OutputStream.generateFieldModule(module: DIContainerMetaData.Container) {
-        module.definitions.filterIsInstance<DIContainerMetaData.Definition.ClassDeclarationDefinition>().forEach { def ->
+    private fun OutputStream.generateFieldModule(module: ConfiguratorContainerMetaData.Container) {
+        module.definitions.filterIsInstance<ConfiguratorContainerMetaData.Definition.ClassDeclarationDefinition>().forEach { def ->
             logger.warn("generate $def")
             generateClassDeclarationDefinition(def)
         }
@@ -94,5 +74,3 @@ fun CodeGenerator.getFile(packageName: String = "com.azharkova.kmm_di.ksp.genera
     Dependencies.ALL_FILES,
     packageName,
     fileName)
-
-

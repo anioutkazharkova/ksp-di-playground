@@ -20,10 +20,10 @@ class ContainerScanner(
         logger.warn("module(Class) componentScan=$componentScan", element)
 
         val name = "$element"
-        val moduleMetadata = DIMetaData.Container(
+        val moduleMetadata = DIContainerMetaData.Container(
             packageName = modulePackage,
             name = name,
-            type = DIMetaData.ElementType.CLASS,
+            type = DIContainerMetaData.ElementType.CLASS,
             componentScan = componentScan
         )
 
@@ -44,15 +44,15 @@ class ContainerScanner(
         return ContainerIndex(modulePackage, moduleMetadata)
     }
 
-    private fun getComponentScan(declaration: KSClassDeclaration): DIMetaData.Container.ComponentScan? {
+    private fun getComponentScan(declaration: KSClassDeclaration): DIContainerMetaData.Container.ComponentScan? {
         val componentScan = declaration.annotations.firstOrNull { it.shortName.asString() == "ComponentScan" }
         return componentScan?.let { a ->
             val value : String = a.arguments.firstOrNull { arg -> arg.name?.asString() == "value" }?.value as? String? ?: ""
-            DIMetaData.Container.ComponentScan(value)
+            DIContainerMetaData.Container.ComponentScan(value)
         }
     }
 
-    private fun addDefinition(element: KSAnnotated): DIMetaData.Definition? {
+    private fun addDefinition(element: KSAnnotated): DIContainerMetaData.Definition? {
         logger.warn("definition(function) -> $element", element)
 
         val ksFunctionDeclaration = (element as KSFunctionDeclaration)
@@ -76,21 +76,49 @@ class ContainerScanner(
                             annotation.arguments.firstOrNull { it.name?.asString() == "createdAtStart" }?.value as Boolean?
                                 ?: false
                         logger.warn("definition(function) -> createdAtStart=$createdAtStart", annotation)
-                       DIMetaData.Definition.FunctionDeclarationDefinition.Single(
+                       DIContainerMetaData.Definition.FunctionDeclarationDefinition.Single(
                             packageName = packageName,
                             qualifier = qualifier,
                             functionName = functionName,
-                            functionParameters = ksFunctionDeclaration.parameters.map { DIMetaData.ConstructorParameter() },
+                            functionParameters = ksFunctionDeclaration.parameters.map { DIContainerMetaData.ConstructorParameter() },
+                            createdAtStart = createdAtStart,
+                            bindings = binds?.map { it.declaration } ?: emptyList()
+                        )
+                    }
+                    DefinitionAnnotation.Cached -> {
+                        val createdAtStart: Boolean =
+                            annotation.arguments.firstOrNull { it.name?.asString() == "createdAtStart" }?.value as Boolean?
+                                ?: false
+                        logger.warn("definition(function) -> createdAtStart=$createdAtStart", annotation)
+                        DIContainerMetaData.Definition.FunctionDeclarationDefinition.Cached(
+                            packageName = packageName,
+                            qualifier = qualifier,
+                            functionName = functionName,
+                            functionParameters = ksFunctionDeclaration.parameters.map { DIContainerMetaData.ConstructorParameter() },
+                            createdAtStart = createdAtStart,
+                            bindings = binds?.map { it.declaration } ?: emptyList()
+                        )
+                    }
+                    DefinitionAnnotation.Shared -> {
+                        val createdAtStart: Boolean =
+                            annotation.arguments.firstOrNull { it.name?.asString() == "createdAtStart" }?.value as Boolean?
+                                ?: false
+                        logger.warn("definition(function) -> createdAtStart=$createdAtStart", annotation)
+                        DIContainerMetaData.Definition.FunctionDeclarationDefinition.Shared(
+                            packageName = packageName,
+                            qualifier = qualifier,
+                            functionName = functionName,
+                            functionParameters = ksFunctionDeclaration.parameters.map { DIContainerMetaData.ConstructorParameter() },
                             createdAtStart = createdAtStart,
                             bindings = binds?.map { it.declaration } ?: emptyList()
                         )
                     }
                     DefinitionAnnotation.Graph -> {
-                        DIMetaData.Definition.FunctionDeclarationDefinition.Graph(
+                        DIContainerMetaData.Definition.FunctionDeclarationDefinition.Graph(
                             packageName = packageName,
                             qualifier = qualifier,
                             functionName = functionName,
-                            functionParameters = ksFunctionDeclaration.parameters.map {DIMetaData.ConstructorParameter() },
+                            functionParameters = ksFunctionDeclaration.parameters.map {DIContainerMetaData.ConstructorParameter() },
                             bindings = binds?.map { it.declaration } ?: emptyList()
                         )
                     }

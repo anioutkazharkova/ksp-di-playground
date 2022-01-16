@@ -5,11 +5,7 @@ import appendText
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.KSPLogger
-import kmm_di.generator.DEFAULT_MODULE_FOOTER
-import kmm_di.generator.DEFAULT_MODULE_HEADER
-import kmm_di.generator.generateClassDeclarationDefinition
-import kmm_di.generator.generateClassModule
-import kmm_di.metadata.DIMetaData
+import kmm_di.metadata.DIContainerMetaData
 import java.io.OutputStream
 
 class DICodeGenerator(
@@ -18,14 +14,13 @@ class DICodeGenerator(
 ) {
 
     fun generateModules(
-        moduleMap: Map<String, DIMetaData.Container>,
-        defaultModule: DIMetaData.Container
+        moduleMap: Map<String, DIContainerMetaData.Container>,
+        defaultModule: DIContainerMetaData.Container
     ) {
         logger.warn("generate ${moduleMap.size} modules ...")
         moduleMap.values.forEachIndexed { index, module ->
             if (index == 0) {
                 val file = codeGenerator.getDefaultFile()
-                file.appendText(DEFAULT_MODULE_HEADER)
             }
             generateModule(module)
             if (index == moduleMap.values.size - 1) {
@@ -36,13 +31,13 @@ class DICodeGenerator(
         }
     }
 
-    private fun generateModule(module: DIMetaData.Container) {
+    private fun generateModule(module: DIContainerMetaData.Container) {
         logger.warn("generate $module - ${module.type}")
         codeGenerator.getDefaultFile().let { defaultFile ->
             if (module.definitions.isNotEmpty()) {
                 when (module.type) {
-                    DIMetaData.ElementType.FIELD -> defaultFile.generateFieldModule(module)
-                    DIMetaData.ElementType.CLASS -> {
+                    DIContainerMetaData.ElementType.FIELD -> defaultFile.generateFieldModule(module)
+                    DIContainerMetaData.ElementType.CLASS -> {
                         val moduleFile = codeGenerator.getFile(fileName = "${module.name}Gen")
                         generateClassModule(moduleFile, module)
                     }
@@ -54,17 +49,16 @@ class DICodeGenerator(
     }
 
     fun generateDefaultDefinitions(
-        definitions: List<DIMetaData.Definition>
+        definitions: List<DIContainerMetaData.Definition>
     ) {
         logger.warn("generate default module")
         definitions.forEachIndexed { index, def ->
             if (index == 0) {
                 codeGenerator.getDefaultFile().apply {
-                    appendText(DEFAULT_MODULE_HEADER)
                 }
             }
             logger.warn("generate $def")
-            if (def is DIMetaData.Definition.ClassDeclarationDefinition) {
+            if (def is DIContainerMetaData.Definition.ClassDeclarationDefinition) {
                 codeGenerator.getDefaultFile().generateClassDeclarationDefinition(def)
             }
             if (index == definitions.size - 1) {
@@ -75,8 +69,8 @@ class DICodeGenerator(
         }
     }
 
-    private fun OutputStream.generateFieldModule(module: DIMetaData.Container) {
-        module.definitions.filterIsInstance<DIMetaData.Definition.ClassDeclarationDefinition>().forEach { def ->
+    private fun OutputStream.generateFieldModule(module: DIContainerMetaData.Container) {
+        module.definitions.filterIsInstance<DIContainerMetaData.Definition.ClassDeclarationDefinition>().forEach { def ->
             logger.warn("generate $def")
             generateClassDeclarationDefinition(def)
         }

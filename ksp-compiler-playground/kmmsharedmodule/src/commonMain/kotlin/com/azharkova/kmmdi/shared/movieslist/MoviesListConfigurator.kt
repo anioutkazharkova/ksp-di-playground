@@ -3,18 +3,22 @@ package com.azharkova.kmmdi.shared.movieslist
 import com.azharkova.kmmdi.shared.base.IInteractor
 import com.azharkova.kmmdi.shared.base.IView
 import com.azharkova.kmmdi.shared.factory.IConfigurator
+import com.azharkova.ksp_annotation.ComponentScan
+import com.azharkova.ksp_annotation.Configurator
 
-class MoviesListConfigurator : com.azharkova.kmmdi.shared.factory.IConfigurator {
+@Configurator
+@ComponentScan("com.azharkova.kmmdi.shared.movieslist")
+class MoviesListConfigurator : IConfigurator {
     companion object {
-        val instance = com.azharkova.kmmdi.shared.movieslist.MoviesListConfigurator()
+        val instance = MoviesListConfigurator()
     }
 
-    override fun create(view: com.azharkova.kmmdi.shared.base.IView): com.azharkova.kmmdi.shared.base.IInteractor? {
-        val interactor: com.azharkova.kmmdi.shared.movieslist.IMoviesListInteractor =
-            com.azharkova.kmmdi.shared.movieslist.MoviesListInteractor()
-        val presenter = com.azharkova.kmmdi.shared.movieslist.MoviesListPresenter()
+    override fun create(view: IView): IInteractor? {
+        val interactor =
+            MoviesListInteractor()
+        val presenter = MoviesListPresenter()
         interactor.presenter = presenter
-        presenter.view = view as? com.azharkova.kmmdi.shared.movieslist.IMoviesListView
+        presenter.view = view as? IMoviesListView
         return interactor
     }
 }

@@ -17,6 +17,16 @@ annotation class Shared(val binds: Array<KClass<*>> = [])
 @Target(AnnotationTarget.CLASS,AnnotationTarget.FUNCTION)
 annotation class Entity(val binds: Array<KClass<*>> = [])
 
+
+@Target(AnnotationTarget.CLASS,AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
+annotation class Presenter(val binds: Array<KClass<*>> = [])
+
+@Target(AnnotationTarget.CLASS,AnnotationTarget.FUNCTION)
+annotation class Interactor(val binds: Array<KClass<*>> = [])
+
+@Target(AnnotationTarget.CLASS,AnnotationTarget.FUNCTION)
+annotation class View(val binds: Array<KClass<*>> = [])
+
 @Target(AnnotationTarget.VALUE_PARAMETER)
 annotation class Param()
 
@@ -25,5 +35,8 @@ annotation class Property(val value: String = "")
 
 @Target(AnnotationTarget.CLASS)
 annotation class Container()
+@Target(AnnotationTarget.CLASS)
+annotation class Configurator()
+
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FIELD)
 annotation class ComponentScan(val value: String = "")

@@ -1,17 +1,18 @@
-package kmm_di.metadata
+package com.azharkova.kmm
 
+import com.azharkova.kmm.configurator.ConfiguratorContainerMetaData
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
+import kmm_di.metadata.getDefinitionAnnotation
+import kmm_di.metadata.getStringQualifier
 
-
-
-class DIComponentScanner(
+class ConfigComponentScanner(
     val logger: KSPLogger,
 ) {
 
-    fun createDefinition(element: KSAnnotated): DIContainerMetaData.Definition {
+    fun createDefinition(element: KSAnnotated): ConfiguratorContainerMetaData.Definition {
         logger.warn("definition(class) -> $element", element)
         val ksClassDeclaration = (element as KSClassDeclaration)
         val packageName = ksClassDeclaration.containingFile!!.packageName.asString()
@@ -22,66 +23,45 @@ class DIComponentScanner(
             val declaredBindings =
                 annotation.arguments.firstOrNull { it.name?.asString() == "binds" }?.value as? List<KSType>?
             val defaultBindings = ksClassDeclaration.superTypes.map { it.resolve().declaration }.toList()
-            when (DefinitionAnnotation.valueOf(name)) {
-                DefinitionAnnotation.Single -> {
-                    val createdAtStart: Boolean =
-                        annotation.arguments.firstOrNull { it.name?.asString() == "createdAtStart" }?.value as Boolean?
-                            ?: false
-                    DIContainerMetaData.Definition.ClassDeclarationDefinition.Single(
+            logger.warn("definition(class) name -> $name", element)
+            val annotation = ConfigAnnotation.valueOf(name)
+            logger.warn("definition(class) annotation -> $annotation", element)
+            when (annotation) {
+                ConfigAnnotation.Interactor -> {
+                    ConfiguratorContainerMetaData.Definition.ClassDeclarationDefinition.Interactor(
                         packageName = packageName,
                         qualifier = qualifier,
                         className = className,
                         constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map {
                             logger.warn("param: ${it.name} ${it.type} ${it.type.javaClass.name}")
-                            DIContainerMetaData.ConstructorParameter(name = "${it.type}") }
+                            ConfiguratorContainerMetaData.ConstructorParameter(name = "${it.type}") }
                             ?: emptyList(),
                         bindings = declaredBindings?.map { it.declaration } ?: defaultBindings,
-                        createdAtStart = createdAtStart
                     )
                 }
-                DefinitionAnnotation.Shared -> {
-                    DIContainerMetaData.Definition.ClassDeclarationDefinition.Shared(
+               ConfigAnnotation.Presenter -> {
+                   ConfiguratorContainerMetaData.Definition.ClassDeclarationDefinition.Presenter(
                         packageName = packageName,
                         qualifier = qualifier,
                         className = className,
                         constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map {
-                            DIContainerMetaData.ConstructorParameter(name = "${it.type}") }
+                            ConfiguratorContainerMetaData.ConstructorParameter(name = "${it.type}") }
                             ?: emptyList(),
                         bindings = declaredBindings?.map { it.declaration } ?: defaultBindings,
                     )
                 }
-                DefinitionAnnotation.Cached -> {
-                    DIContainerMetaData.Definition.ClassDeclarationDefinition.Cached(
+                ConfigAnnotation.View -> {
+                    ConfiguratorContainerMetaData.Definition.ClassDeclarationDefinition.View(
                         packageName = packageName,
                         qualifier = qualifier,
                         className = className,
                         constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map {
-                            DIContainerMetaData.ConstructorParameter(name = "${it.type}") }
+                            ConfiguratorContainerMetaData.ConstructorParameter(name = "${it.type}") }
                             ?: emptyList(),
                         bindings = declaredBindings?.map { it.declaration } ?: defaultBindings,
                     )
                 }
-                DefinitionAnnotation.Entity -> {
-                    DIContainerMetaData.Definition.ClassDeclarationDefinition.Entity(
-                        packageName = packageName,
-                        qualifier = qualifier,
-                        className = className,
-                        constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map {
-                            DIContainerMetaData.ConstructorParameter(name = "${it.type}") }
-                            ?: emptyList(),
-                        bindings = declaredBindings?.map { it.declaration } ?: defaultBindings,
-                    )
-                }
-                DefinitionAnnotation.Graph -> {
-                    DIContainerMetaData.Definition.ClassDeclarationDefinition.Graph(
-                        packageName = packageName,
-                        qualifier = qualifier,
-                        className = className,
-                        constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map { DIContainerMetaData.ConstructorParameter() }
-                            ?: emptyList(),
-                        bindings = declaredBindings?.map { it.declaration } ?: defaultBindings
-                    )
-                }
+
             }
 
         } ?: error("Can't create definition found for $element")

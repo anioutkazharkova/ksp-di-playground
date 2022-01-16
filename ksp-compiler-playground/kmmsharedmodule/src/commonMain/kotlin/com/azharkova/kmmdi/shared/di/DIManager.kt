@@ -29,8 +29,8 @@ class DIManager {
         appContainer.register(type, ScopeType.Graph, fabric)
     }
 
-    fun <T : com.azharkova.kmmdi.shared.base.IView> resolve(view: T): Any? {
-        val interactor = com.azharkova.kmmdi.shared.factory.ModuleConfig.instance.config(view)
+    fun <T : IView> resolve(view: T): Any? {
+        val interactor = ModuleConfig.instance.config(view)
         interactor?.setup(this)
         return interactor
     }

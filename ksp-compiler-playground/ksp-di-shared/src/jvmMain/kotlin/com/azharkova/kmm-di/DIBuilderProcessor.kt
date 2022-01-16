@@ -3,7 +3,7 @@
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated
 import kmm_di.generator.DICodeGenerator
-import kmm_di.metadata.DIMetaData
+import kmm_di.metadata.DIContainerMetaData
 import kmm_di.metadata.DIMetaDataScanner
 
 class DIBuilderProcessor(
@@ -16,7 +16,7 @@ class DIBuilderProcessor(
 
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val defaultModule = DIMetaData.Container(
+        val defaultModule = DIContainerMetaData.Container(
             packageName = "",
             name = "defaultModule"
         )

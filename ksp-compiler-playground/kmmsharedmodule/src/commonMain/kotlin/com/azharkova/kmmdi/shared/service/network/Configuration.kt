@@ -1,4 +1,4 @@
-package com.azharkova.kmmdi.shared.network
+package com.azharkova.kmmdi.shared.service.network
 
 object Configuration {
     val BASE_URL = "http://api.themoviedb.org/3/"
