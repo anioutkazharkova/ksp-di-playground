@@ -47,79 +47,58 @@ sealed class DIMetaData {
         ) : Definition(packageName, qualifier, keyword, bindings) {
 
             class Single(
-                packageName: String,
-                qualifier: String?,
-                functionName: String,
-                functionParameters: List<ConstructorParameter> = emptyList(),
-                val createdAtStart: Boolean = false,
-                bindings: List<KSDeclaration>
+                bundle: FunctionBundle
             ) : FunctionDeclarationDefinition(
-                packageName,
-                qualifier,
+                bundle.packageName,
+                bundle.qualifier,
                 "ScopeType.Container",
-                functionName,
-                functionParameters,
-                bindings
+                bundle.functionName,
+                bundle.functionParameters,
+                bundle.bindings
             )
 
             class Graph(
-                packageName: String,
-                qualifier: String?,
-                functionName: String,
-                functionParameters: List<ConstructorParameter> = emptyList(),
-                bindings: List<KSDeclaration>
+                bundle: FunctionBundle
             ) : FunctionDeclarationDefinition(
-                packageName,
-                qualifier,
+                bundle.packageName,
+                bundle.qualifier,
                 "ScopeType.Graph",
-                functionName,
-                functionParameters,
-                bindings
+                bundle.functionName,
+                bundle.functionParameters,
+                bundle.bindings
             )
 
             class Shared(
-                packageName: String,
-                qualifier: String?,
-                functionName: String,
-                functionParameters: List<ConstructorParameter> = emptyList(),
-                bindings: List<KSDeclaration>
-            ) : ClassDeclarationDefinition(
-                packageName,
-                qualifier,
+                bundle: FunctionBundle
+            ) : FunctionDeclarationDefinition(
+                bundle.packageName,
+                bundle.qualifier,
                 "ScopeType.Weak",
-                functionName,
-                functionParameters,
-                bindings
+                bundle.functionName,
+                bundle.functionParameters,
+                bundle.bindings
             )
 
             class Entity(
-                packageName: String,
-                qualifier: String?,
-                functionName: String,
-                functionParameters: List<ConstructorParameter> = emptyList(),
-                bindings: List<KSDeclaration>
-            ) : ClassDeclarationDefinition(
-                packageName,
-                qualifier,
+                bundle: FunctionBundle
+            ) : FunctionDeclarationDefinition(
+                bundle.packageName,
+                bundle.qualifier,
                 "ScopeType.Entity",
-                functionName,
-                functionParameters,
-                bindings
+                bundle.functionName,
+                bundle.functionParameters,
+                bundle.bindings
             )
 
             class Cached(
-                packageName: String,
-                qualifier: String?,
-                functionName: String,
-                functionParameters: List<ConstructorParameter> = emptyList(),
-                bindings: List<KSDeclaration>
-            ) : ClassDeclarationDefinition(
-                packageName,
-                qualifier,
+                bundle: FunctionBundle
+            ) : FunctionDeclarationDefinition(
+                bundle.packageName,
+                bundle.qualifier,
                 "ScopeType.Cached",
-                functionName,
-                functionParameters,
-                bindings
+                bundle.functionName,
+                bundle.functionParameters,
+                bundle.bindings
             )
         }
 
@@ -133,82 +112,77 @@ sealed class DIMetaData {
         ) : Definition(packageName, qualifier, keyword, bindings) {
 
             class Single(
-                packageName: String,
-                qualifier: String?,
-                className: String,
-                constructorParameters: List<ConstructorParameter> = emptyList(),
-                val createdAtStart: Boolean,
-                bindings: List<KSDeclaration>
+                bundle: ClassBundle
             ) : ClassDeclarationDefinition(
-                packageName,
-                qualifier,
+                bundle.packageName,
+                bundle.qualifier,
                 "ScopeType.Container",
-                className,
-                constructorParameters,
-                bindings
+                bundle.className,
+                bundle.constructorParameters,
+                bundle.bindings
             )
 
             class Shared(
-                packageName: String,
-                qualifier: String?,
-                className: String,
-                constructorParameters: List<ConstructorParameter> = emptyList(),
-                bindings: List<KSDeclaration>
+                bundle: ClassBundle
             ) : ClassDeclarationDefinition(
-                packageName,
-                qualifier,
+                bundle.packageName,
+                bundle.qualifier,
                 "ScopeType.Weak",
-                className,
-                constructorParameters,
-                bindings
+                bundle.className,
+                bundle.constructorParameters,
+                bundle.bindings
             )
 
             class Entity(
-                packageName: String,
-                qualifier: String?,
-                className: String,
-                constructorParameters: List<ConstructorParameter> = emptyList(),
-                bindings: List<KSDeclaration>
+                bundle: ClassBundle
             ) : ClassDeclarationDefinition(
-                packageName,
-                qualifier,
+                bundle.packageName,
+                bundle.qualifier,
                 "ScopeType.Entity",
-                className,
-                constructorParameters,
-                bindings
+                bundle.className,
+                bundle.constructorParameters,
+                bundle.bindings
             )
 
             class Cached(
-                packageName: String,
-                qualifier: String?,
-                className: String,
-                constructorParameters: List<ConstructorParameter> = emptyList(),
-                bindings: List<KSDeclaration>
+                bundle: ClassBundle
             ) : ClassDeclarationDefinition(
-                packageName,
-                qualifier,
+                bundle.packageName,
+                bundle.qualifier,
                 "ScopeType.Cached",
-                className,
-                constructorParameters,
-                bindings
+                bundle.className,
+                bundle.constructorParameters,
+                bundle.bindings
             )
 
             class Graph(
-                packageName: String,
-                qualifier: String?,
-                className: String,
-                constructorParameters: List<ConstructorParameter> = emptyList(),
-                bindings: List<KSDeclaration>
+                bundle: ClassBundle
             ) : ClassDeclarationDefinition(
-                packageName,
-                qualifier,
+                bundle.packageName,
+                bundle.qualifier,
                 "ScopeType.Graph",
-                className,
-                constructorParameters,
-                bindings
+                bundle.className,
+                bundle.constructorParameters,
+                bundle.bindings
             )
         }
     }
+
+    data class FunctionBundle(
+       val packageName: String,
+       val qualifier: String?,
+       val functionName: String,
+       val functionParameters: List<ConstructorParameter> = emptyList(),
+       val bindings: List<KSDeclaration>
+    )
+
+    data class ClassBundle(
+        val packageName: String,
+        val qualifier: String?,
+        val className: String,
+        val constructorParameters: List<ConstructorParameter> = emptyList(),
+        val bindings: List<KSDeclaration>
+    )
 
     enum class ElementType {
         FIELD, CLASS

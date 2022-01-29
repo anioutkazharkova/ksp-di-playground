@@ -69,59 +69,45 @@ class ContainerScanner(
 
                 val binds = annotation.arguments.firstOrNull { it.name?.asString() == "binds" }?.value as? List<KSType>?
                 logger.warn("definition(function) -> binds=$binds", annotation)
+                val bundle: DIMetaData.FunctionBundle = DIMetaData.FunctionBundle(
+                    packageName = packageName,
+                    qualifier = qualifier,
+                    functionName = functionName,
+                    functionParameters = ksFunctionDeclaration.parameters.map { DIMetaData.ConstructorParameter() },
+                    bindings = binds?.map { it.declaration } ?: emptyList()
 
-                when (DefinitionAnnotation.valueOf(name)) {
-                    DefinitionAnnotation.Single -> {
-                        val createdAtStart: Boolean =
-                            annotation.arguments.firstOrNull { it.name?.asString() == "createdAtStart" }?.value as Boolean?
-                                ?: false
-                        logger.warn("definition(function) -> createdAtStart=$createdAtStart", annotation)
-                       DIMetaData.Definition.FunctionDeclarationDefinition.Single(
-                            packageName = packageName,
-                            qualifier = qualifier,
-                            functionName = functionName,
-                            functionParameters = ksFunctionDeclaration.parameters.map { DIMetaData.ConstructorParameter() },
-                            createdAtStart = createdAtStart,
-                            bindings = binds?.map { it.declaration } ?: emptyList()
-                        )
-                    }
-                    DefinitionAnnotation.Graph -> {
-                        DIMetaData.Definition.FunctionDeclarationDefinition.Graph(
-                            packageName = packageName,
-                            qualifier = qualifier,
-                            functionName = functionName,
-                            functionParameters = ksFunctionDeclaration.parameters.map {DIMetaData.ConstructorParameter() },
-                            bindings = binds?.map { it.declaration } ?: emptyList()
-                        )
-                    }
-                    DefinitionAnnotation.Shared -> {
-                        DIMetaData.Definition.FunctionDeclarationDefinition.Graph(
-                            packageName = packageName,
-                            qualifier = qualifier,
-                            functionName = functionName,
-                            functionParameters = ksFunctionDeclaration.parameters.map {DIMetaData.ConstructorParameter() },
-                            bindings = binds?.map { it.declaration } ?: emptyList()
-                        )
-                    }
-                    DefinitionAnnotation.Cached -> {
-                        DIMetaData.Definition.FunctionDeclarationDefinition.Cached(
-                            packageName = packageName,
-                            qualifier = qualifier,
-                            functionName = functionName,
-                            functionParameters = ksFunctionDeclaration.parameters.map {DIMetaData.ConstructorParameter() },
-                            bindings = binds?.map { it.declaration } ?: emptyList()
-                        )
-                    }
-                    DefinitionAnnotation.Entity -> {
-                        DIMetaData.Definition.FunctionDeclarationDefinition.Entity(
-                            packageName = packageName,
-                            qualifier = qualifier,
-                            functionName = functionName,
-                            functionParameters = ksFunctionDeclaration.parameters.map {DIMetaData.ConstructorParameter() },
-                            bindings = binds?.map { it.declaration } ?: emptyList()
-                        )
-                    }
-                }
+                )
+               processAnnotation (DefinitionAnnotation.valueOf(name), bundle)
+            }
+        }
+    }
+
+    private fun processAnnotation(annotation: DefinitionAnnotation, bundle: DIMetaData.FunctionBundle):DIMetaData.Definition.FunctionDeclarationDefinition {
+        when (annotation) {
+            DefinitionAnnotation.Single -> {
+           return     DIMetaData.Definition.FunctionDeclarationDefinition.Single(
+                    bundle
+                )
+            }
+            DefinitionAnnotation.Graph -> {
+               return DIMetaData.Definition.FunctionDeclarationDefinition.Graph(
+                    bundle
+                )
+            }
+            DefinitionAnnotation.Shared -> {
+             return   DIMetaData.Definition.FunctionDeclarationDefinition.Graph(
+                    bundle
+                )
+            }
+            DefinitionAnnotation.Cached -> {
+             return   DIMetaData.Definition.FunctionDeclarationDefinition.Cached(
+                    bundle
+                )
+            }
+            DefinitionAnnotation.Entity -> {
+             return   DIMetaData.Definition.FunctionDeclarationDefinition.Entity(
+                    bundle
+                )
             }
         }
     }

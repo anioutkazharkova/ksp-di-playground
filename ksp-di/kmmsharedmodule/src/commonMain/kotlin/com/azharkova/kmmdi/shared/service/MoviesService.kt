@@ -17,7 +17,3 @@ class MoviesService(val networkClient: NetworkClient?) {
         return networkClient?.loadContentData(url)
     }
 }
-
-class SampleService() {
-    //@Create fun provideNetwork(): NetworkClient?
-}

@@ -22,68 +22,48 @@ class DIComponentScanner(
             val declaredBindings =
                 annotation.arguments.firstOrNull { it.name?.asString() == "binds" }?.value as? List<KSType>?
             val defaultBindings = ksClassDeclaration.superTypes.map { it.resolve().declaration }.toList()
-            when (DefinitionAnnotation.valueOf(name)) {
-                DefinitionAnnotation.Single -> {
-                    val createdAtStart: Boolean =
-                        annotation.arguments.firstOrNull { it.name?.asString() == "createdAtStart" }?.value as Boolean?
-                            ?: false
-                    DIMetaData.Definition.ClassDeclarationDefinition.Single(
-                        packageName = packageName,
-                        qualifier = qualifier,
-                        className = className,
-                        constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map {
-                            logger.warn("param: ${it.name} ${it.type} ${it.type.javaClass.name}")
-                            DIMetaData.ConstructorParameter(name = "${it.type}") }
-                            ?: emptyList(),
-                        bindings = declaredBindings?.map { it.declaration } ?: defaultBindings,
-                        createdAtStart = createdAtStart
-                    )
-                }
-                DefinitionAnnotation.Shared -> {
-                    DIMetaData.Definition.ClassDeclarationDefinition.Shared(
-                        packageName = packageName,
-                        qualifier = qualifier,
-                        className = className,
-                        constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map {
-                            DIMetaData.ConstructorParameter(name = "${it.type}") }
-                            ?: emptyList(),
-                        bindings = declaredBindings?.map { it.declaration } ?: defaultBindings,
-                    )
-                }
-                DefinitionAnnotation.Cached -> {
-                    DIMetaData.Definition.ClassDeclarationDefinition.Cached(
-                        packageName = packageName,
-                        qualifier = qualifier,
-                        className = className,
-                        constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map {
-                            DIMetaData.ConstructorParameter(name = "${it.type}") }
-                            ?: emptyList(),
-                        bindings = declaredBindings?.map { it.declaration } ?: defaultBindings,
-                    )
-                }
-                DefinitionAnnotation.Entity -> {
-                    DIMetaData.Definition.ClassDeclarationDefinition.Entity(
-                        packageName = packageName,
-                        qualifier = qualifier,
-                        className = className,
-                        constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map {
-                            DIMetaData.ConstructorParameter(name = "${it.type}") }
-                            ?: emptyList(),
-                        bindings = declaredBindings?.map { it.declaration } ?: defaultBindings,
-                    )
-                }
-                DefinitionAnnotation.Graph -> {
-                    DIMetaData.Definition.ClassDeclarationDefinition.Graph(
-                        packageName = packageName,
-                        qualifier = qualifier,
-                        className = className,
-                        constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map { DIMetaData.ConstructorParameter() }
-                            ?: emptyList(),
-                        bindings = declaredBindings?.map { it.declaration } ?: defaultBindings
-                    )
-                }
-            }
+
+            val bundle: DIMetaData.ClassBundle = DIMetaData.ClassBundle(
+                packageName = packageName,
+                qualifier = qualifier,
+                className = className,
+                constructorParameters = ksClassDeclaration.primaryConstructor?.parameters?.map {
+                    DIMetaData.ConstructorParameter(name = "${it.type}") }
+                    ?: emptyList(),
+                bindings = declaredBindings?.map { it.declaration } ?: defaultBindings,
+            )
+            processAnnotation (DefinitionAnnotation.valueOf(name), bundle)
 
         } ?: error("Can't create definition found for $element")
+    }
+
+    private fun processAnnotation(annotation: DefinitionAnnotation, bundle: DIMetaData.ClassBundle):DIMetaData.Definition.ClassDeclarationDefinition {
+        when (annotation) {
+            DefinitionAnnotation.Single -> {
+
+              return  DIMetaData.Definition.ClassDeclarationDefinition.Single(
+                    bundle
+                )
+            }
+            DefinitionAnnotation.Shared -> {
+               return DIMetaData.Definition.ClassDeclarationDefinition.Shared(
+                    bundle)
+            }
+            DefinitionAnnotation.Cached -> {
+              return  DIMetaData.Definition.ClassDeclarationDefinition.Cached(
+                    bundle
+                )
+            }
+            DefinitionAnnotation.Entity -> {
+              return  DIMetaData.Definition.ClassDeclarationDefinition.Entity(
+                    bundle
+                )
+            }
+            DefinitionAnnotation.Graph -> {
+             return  DIMetaData.Definition.ClassDeclarationDefinition.Graph(
+                    bundle
+                )
+            }
+        }
     }
 }
